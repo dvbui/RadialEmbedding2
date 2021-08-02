@@ -131,6 +131,15 @@ def fit_transform(distance_matrix, min_dist=0, number_of_rings=4):
             for b in B_list:
                 max_dist = max(max_dist, distance_matrix[a][b])
         
+        same_cluster = False
+        for a in A_list:
+            for b in B_list:
+                if labels[a] == labels[b]:
+                    same_cluster = True
+        
+        if not same_cluster:
+            max_dist = 2
+        
         column_distances.append(max_dist)
     
     print(column_distances)
@@ -155,7 +164,7 @@ def fit_transform(distance_matrix, min_dist=0, number_of_rings=4):
                 unit_angle = unit_distance / radii[r]
                 for i in range(len(partition[r][c])):
                     x = partition[r][c][i]
-                    result[x] = [radii[r] * math.cos(current_angle_cell), radii[r] * math.sin(current_angle_cell)]
+                    result[x] = [0.1*(2**(r+1)) * math.cos(current_angle_cell), 0.1*(2**(r+1)) * math.sin(current_angle_cell)]
                     if i+1 < len(partition[r][c]):
                         current_angle_cell += unit_angle * distance_matrix[partition[r][c][i]][partition[r][c][i+1]]
         current_angle += column_angles[c]
