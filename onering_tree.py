@@ -4,7 +4,50 @@ from radii import *
 from clustering import clustering
 from find_ring import closest
 from ensure_min_dist import ensure_min_dist
+from sklearn.cluster import AgglomerativeClustering
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+import numpy as np
 
+def clustering(distance_matrix):
+    X = np.array([distance_matrix[i][1:] for i in range(1, len(distance_matrix))])
+    best_value = -1e9
+    best_k = 2
+    for k in range(2, min(len(distance_matrix)-1, 9)):
+        clustering = KMeans(random_state=0,n_clusters=k).fit(X)
+        labels = clustering.labels_
+        tmp = silhouette_score(X, labels, metric="precomputed")
+        if tmp > best_value:
+            best_value = tmp
+            best_k = k
+    clustering = KMeans(random_state=0, n_clusters = best_k).fit(X)
+    labels = list(clustering.labels_.tolist())
+
+    return [-1] + labels
+
+def greedy_order(n, labels, d1):
+    order = [1]
+    chosen = set([1])
+    for i in range(2, n):
+        last_part = order[-1]
+        best_neighbor = -1
+        for j in range(1,n):
+            if j in chosen or labels[j] != labels[last_part]:
+                continue
+            if best_neighbor == -1 or d1(best_neighbor,last_part) > d1(j, last_part):
+                best_neighbor = j
+        
+        if best_neighbor == -1:
+            for j in range(1,n):
+                if j in chosen:
+                    continue
+                if best_neighbor == -1 or d1(best_neighbor,last_part) > d1(j, last_part):
+                    best_neighbor = j
+        
+        order.append(best_neighbor)
+        chosen.add(best_neighbor)
+    
+    return order
 
 def dfs(adj, x):
     result = [x]
@@ -12,7 +55,7 @@ def dfs(adj, x):
         result.extend(dfs(adj, j))
     return result
 
-def entities_order(distance_matrix, seeds):
+def entities_order(distance_matrix, labels, seeds):
     v = [[] for i in range(len(distance_matrix))]
     for i in range(len(seeds)):
         for j in seeds[i]:
@@ -21,10 +64,14 @@ def entities_order(distance_matrix, seeds):
             else:
                 best_parent = None
                 best_parent_dist = None
-                for z in seeds[i-1]:   
+                for z in seeds[i-1]:
+                    if labels[z] != labels[j]:
+                        continue
                     if best_parent is None or best_parent_dist < distance_matrix[z][j]:
                         best_parent = z
                         best_parent_dist = distance_matrix[z][j]
+                if best_parent is None:
+                    best_parent = 0
                 v[best_parent].append(j)
     
     return dfs(v, 0)[1:]
@@ -32,12 +79,17 @@ def entities_order(distance_matrix, seeds):
 def fit_transform(distance_matrix, min_dist=0, number_of_rings=4):
     n = len(distance_matrix)
     d1 = lambda x,y: distance_matrix[x][y]
+
+    labels = clustering(distance_matrix)
+    old_order = greedy_order(n, labels, d1)
+
     radii = find_radii(0, list(range(1, n)), d1, number_of_rings)
+    
     seeds = [[] for i in range(number_of_rings)]
-    for i in range(1, n):
+    for i in old_order:
         seeds[closest(d1(0, i), radii)].append(i)
     
-    order = entities_order(distance_matrix, seeds)
+    order = entities_order(distance_matrix, labels, seeds)
     partition = [{} for i in range(number_of_rings)]
 
     current_column = 0
