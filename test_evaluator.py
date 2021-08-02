@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import math
 
 
-algorithm_names = ["onering", "onering new", "parallel", "parallel new", "solarviewsa", "solarviewgreedy"]
-category = "(100 points, TFIDF, default, min_dist=0.06)"
+algorithm_names = ["tree"]#, "onering", "onering new", "parallel", "parallel new", "solarviewsa", "solarviewgreedy"]
+category = "(100 points random, TFIDF, default, min_dist=0.06)"
 def error(data, confidence=0.95):
     a = 1.0 * np.array(data)
     n = len(a)
@@ -74,8 +74,10 @@ def solve(total_folder_name):
     total_result["Ordinal questions (B in top 3 of A, C is outside of top 5)"] = []
     total_result["Ordinal questions (same ring, B in top 3 of A, C is outside of top 5)"] = []
     total_result["Generating distance matrix time"] = []
-    for i in range(0,101):
-        os.chdir("{}".format(i))
+
+    tests = os.listdir(".")
+    for i in tests:
+        os.chdir(i)
         #os.chdir("with_optimizer")
         update_result()
         #os.chdir("..")

@@ -1,5 +1,5 @@
-from onering_new import *
-total_folder_name = "onering new (100 points random, TFIDF, default, min_dist=0.06)"
+from onering_tree import *
+total_folder_name = "tree (100 points random, TFIDF, default, min_dist=0.06)"
 from plotting import *
 import os
 from ordinal_questions import *
@@ -13,8 +13,8 @@ def test_solve():
         os.mkdir(total_folder_name)
     os.chdir(total_folder_name)
     results = []
-    for i in range(0,len(chosen_articles)):
-        id = chosen_articles[id]
+    for i in range(0,10):
+        id = chosen_articles[i]
         start_matrix = timer()
         distance_matrix = create_distance_matrix(id, False)
         end_matrix = timer()
@@ -32,12 +32,6 @@ def test_solve():
         
         distance_matrix = create_distance_matrix(id, False)
         question_answers(result, distance_matrix, prefix, end_matrix - start_matrix, end-start)
-        #create_photo(result, distance_matrix, prefix)
-        #create_photo(result, distance_matrix, prefix, False)
-        #create_line_photo(result, distance_matrix, prefix)
-        #create_line_photo(result, distance_matrix, prefix, False)
-        #create_umap(result, distance_matrix, prefix)
-        #create_radius_bar_chart(result, distance_matrix, prefix)
         
         print("End of test")
     
