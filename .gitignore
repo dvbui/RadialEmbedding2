@@ -1,1 +1,9 @@
 /data
+/onering*
+/parallel*
+/solarview*
+/tree*
+*.pyc
+*.txt
+*.png
+*.db
