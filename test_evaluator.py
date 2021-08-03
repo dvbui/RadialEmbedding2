@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import math
 
 
-algorithm_names = ["tree"]#, "onering", "onering new", "parallel", "parallel new", "solarviewsa", "solarviewgreedy"]
+algorithm_names = ["tree", "onering new", "onering", "parallel", "solarviewsa", "solarviewgreedy"]
 category = "(100 points random, TFIDF, default, min_dist=0.06)"
 def error(data, confidence=0.95):
     a = 1.0 * np.array(data)
@@ -89,9 +89,6 @@ def solve(total_folder_name):
 
 def plotting(name, overall):
     fig, ax = plt.subplots()
-
-    ax.plot(1, 0, ">k", transform=ax.get_yaxis_transform(), clip_on=False)
-    ax.plot(0, 1, "^k", transform=ax.get_xaxis_transform(), clip_on=False)
     
     cnt = 0
     for x in overall:

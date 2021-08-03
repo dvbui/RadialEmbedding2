@@ -2,7 +2,7 @@ import math
 import json
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
-data_file_suffix = ""
+data_file_suffix = "_nyt_750"
 with open('./data/abstracts' + data_file_suffix + '.json') as file:
   abstracts = json.load(file)
 
