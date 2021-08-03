@@ -5,8 +5,8 @@ import scipy.stats
 import matplotlib.pyplot as plt
 import math
 
-
-algorithm_names = ["tree", "onering new", "onering", "parallel", "solarviewsa", "solarviewgreedy"]
+plt.figure(figsize=(8, 6), dpi=1000)
+algorithm_names = ["tree", "onering", "onering new", "parallel", "solarviewsa", "solarviewgreedy"]
 category = "(100 points random, TFIDF, default, min_dist=0.06)"
 def error(data, confidence=0.95):
     a = 1.0 * np.array(data)
@@ -88,17 +88,25 @@ def solve(total_folder_name):
     return total_result
 
 def plotting(name, overall):
+    print(name)
     fig, ax = plt.subplots()
+    plt.xticks(rotation=20)
+    ax.set_xticks(list(range(len(algorithm_names))))
+    ax.set_xticklabels(algorithm_names)
+    ax.set_title(name)
+    if "time" not in name:
+        ax.set_ylim(0, 1)
     
     cnt = 0
     for x in overall:
         for y in overall[x][name]:
-            ax.scatter(cnt, y, c='#1f77b41a', s=4)
-
+            ax.scatter(cnt, y, c='#1f77b4bf', s=20)
+        
         m, e = error(overall[x][name])
+        print("{}: mean {:0.2f}, error {:0.2f}, [{:0.2f}, {:0.2f}] min {:0.2f}, max {:0.2f}".format(x, m, e, m-e, m+e, min(overall[x][name]), max(overall[x][name])))
         a = np.arange(m-e, m+e, 0.001)
-        ax.plot(np.array([cnt+0.5] * len(a)), a, c="black", linewidth = 2)
-        ax.scatter(cnt, m, c="red", s=2)
+        ax.plot(np.array([cnt] * len(a)), a, c="black", linewidth = 1)
+        ax.scatter(cnt, m, c="red", s=20)
 
         cnt+=1
     
