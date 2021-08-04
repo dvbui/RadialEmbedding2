@@ -7,7 +7,7 @@ import math
 
 plt.figure(figsize=(8, 6), dpi=1000)
 algorithm_names = ["tree", "onering", "onering new", "parallel", "solarviewsa", "solarviewgreedy"]
-category = "(100 points random, TFIDF, default, min_dist=0.06)"
+category = "(100 points random, TFIDF, NYT, min_dist=0.06)"
 def error(data, confidence=0.95):
     a = 1.0 * np.array(data)
     n = len(a)
@@ -103,7 +103,7 @@ def plotting(name, overall):
             ax.scatter(cnt, y, c='#1f77b4bf', s=20)
         
         m, e = error(overall[x][name])
-        print("{}: mean {:0.2f}, error {:0.2f}, [{:0.2f}, {:0.2f}] min {:0.2f}, max {:0.2f}".format(x, m, e, m-e, m+e, min(overall[x][name]), max(overall[x][name])))
+        print("{}: mean {:0.4f}, error {:0.4f}, [{:0.4f}, {:0.4f}] min {:0.4f}, max {:0.4f}".format(x, m, e, m-e, m+e, min(overall[x][name]), max(overall[x][name])))
         a = np.arange(m-e, m+e, 0.001)
         ax.plot(np.array([cnt] * len(a)), a, c="black", linewidth = 1)
         ax.scatter(cnt, m, c="red", s=20)

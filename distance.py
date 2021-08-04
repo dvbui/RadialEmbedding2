@@ -6,9 +6,10 @@ data_file_suffix = "_nyt_750"
 with open('./data/abstracts' + data_file_suffix + '.json') as file:
   abstracts = json.load(file)
 
-tfidfVectorizer = TfidfVectorizer()
-tfidfvectors = tfidfVectorizer.fit_transform(abstracts)
-tfidf_top100 = np.load('./data/tfidfDist' + data_file_suffix + '.npy')
+#tfidfVectorizer = TfidfVectorizer()
+#tfidfvectors = tfidfVectorizer.fit_transform(abstracts)
+#tfidf_top100 = np.load('./data/tfidfDist' + data_file_suffix + '.npy')
+tfidf_top100 = np.load('./data/seDist' + data_file_suffix + '.npy')
 
 distance_cache = {}
 
@@ -34,7 +35,7 @@ def d_cosine(x, y, is_estimate=False):
             distance_cache[(x,y)] = tfidf_top100[0][y][i]
             distance_cache[(y,x)] = tfidf_top100[0][y][i]
             return tfidf_top100[0][y][i]
-    if not is_estimate:
+    if False: #not is_estimate:
         distance_cache[(x,y)] = d(tfidfvectors[x], tfidfvectors[y])
     else:
         distance_cache[(x,y)] = 0.5 + 0.5*max(tfidf_top100[0][y][-1], tfidf_top100[0][x][-1])
